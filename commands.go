@@ -57,7 +57,7 @@ func commandMap(config *models.ConfigType) error {
 		return nil
 	}
 
-	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Next)
+	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Next, config.Cache)
 
 	if err != nil {
 		return err
@@ -86,7 +86,7 @@ func commandMapBack(config *models.ConfigType) error {
 		return nil
 	}
 
-	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Previous)
+	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Previous, config.Cache)
 
 	if err != nil {
 		return err

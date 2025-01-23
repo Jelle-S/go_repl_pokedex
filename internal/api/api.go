@@ -4,19 +4,27 @@ import (
 	"encoding/json"
 	"io"
 	"net/http"
+
+	"github.com/Jelle-S/pokedexcli/internal/pokecache"
 )
 
-func GetAndUnmarshal[T any](url string) (T, error) {
+func GetAndUnmarshal[T any](url string, c *pokecache.Cache) (T, error) {
 	var _default T
-	res, err := http.Get(url)
-	if err != nil {
-		return _default, err
-	}
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
+	var err error
 
-	if err != nil {
-		return _default, err
+	body, ok := c.Get(url)
+	if !ok {
+		res, err := http.Get(url)
+
+		if err != nil {
+			return _default, err
+		}
+		defer res.Body.Close()
+		body, err = io.ReadAll(res.Body)
+		if err != nil {
+			return _default, err
+		}
+		c.Add(url, body)
 	}
 
 	var t T

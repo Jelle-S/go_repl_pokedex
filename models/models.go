@@ -1,5 +1,9 @@
 package models
 
+import (
+	"github.com/Jelle-S/pokedexcli/internal/pokecache"
+)
+
 type CliCommand struct {
 	Name        string
 	Description string
@@ -9,6 +13,7 @@ type CliCommand struct {
 type ConfigType struct {
 	Next     string
 	Previous string
+	Cache    *pokecache.Cache
 }
 
 type LocationAreaResponse struct {

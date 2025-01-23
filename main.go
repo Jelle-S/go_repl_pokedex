@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
+
+	"github.com/Jelle-S/pokedexcli/internal/pokecache"
 
 	"github.com/Jelle-S/pokedexcli/models"
 )
@@ -15,6 +18,7 @@ func main() {
 	config := models.ConfigType{
 		Next:     "https://pokeapi.co/api/v2/location-area/",
 		Previous: "",
+		Cache:    pokecache.NewCache(5 * time.Second),
 	}
 	for {
 		fmt.Print("Pokedex > ")
