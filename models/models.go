@@ -1,9 +1,9 @@
-package main
+package models
 
 type CliCommand struct {
-	name        string
-	description string
-	callback    func(config *ConfigType) error
+	Name        string
+	Description string
+	Callback    func(config *ConfigType) error
 }
 
 type ConfigType struct {

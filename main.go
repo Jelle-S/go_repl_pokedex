@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/Jelle-S/pokedexcli/models"
 )
 
 func main() {
-	commands := SupportedCommands()
+	commands := supportedCommands()
 	scanner := bufio.NewScanner(os.Stdin)
-	config := ConfigType{
+	config := models.ConfigType{
 		Next:     "https://pokeapi.co/api/v2/location-area/",
 		Previous: "",
 	}
@@ -23,7 +25,7 @@ func main() {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := command.callback(&config)
+		err := command.Callback(&config)
 		if err != nil {
 			panic(err)
 		}

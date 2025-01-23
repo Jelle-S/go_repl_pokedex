@@ -1,74 +1,63 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
 	"os"
+
+	"github.com/Jelle-S/pokedexcli/internal/api"
+
+	"github.com/Jelle-S/pokedexcli/models"
 )
 
-func SupportedCommands() map[string]CliCommand {
-	return map[string]CliCommand{
+func supportedCommands() map[string]models.CliCommand {
+	return map[string]models.CliCommand{
 		"help": {
-			name:        "help",
-			description: "Displays a help message",
-			callback:    commandHelp,
+			Name:        "help",
+			Description: "Displays a help message",
+			Callback:    commandHelp,
 		},
 		"map": {
-			name:        "map",
-			description: "Display the next 20 locations",
-			callback:    commandMap,
+			Name:        "map",
+			Description: "Display the next 20 locations",
+			Callback:    commandMap,
 		},
 		"mapb": {
-			name:        "mapb",
-			description: "Display the first 20 locations",
-			callback:    commandMapBack,
+			Name:        "mapb",
+			Description: "Display the first 20 locations",
+			Callback:    commandMapBack,
 		},
 		"exit": {
-			name:        "exit",
-			description: "Exit the Pokedex",
-			callback:    commandExit,
+			Name:        "exit",
+			Description: "Exit the Pokedex",
+			Callback:    commandExit,
 		},
 	}
 
 }
 
-func commandExit(config *ConfigType) error {
+func commandExit(config *models.ConfigType) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(config *ConfigType) error {
+func commandHelp(config *models.ConfigType) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
 	fmt.Println("")
-	for _, command := range SupportedCommands() {
-		fmt.Printf("%s: %s\n", command.name, command.description)
+	for _, command := range supportedCommands() {
+		fmt.Printf("%s: %s\n", command.Name, command.Description)
 	}
 	return nil
 }
 
-func commandMap(config *ConfigType) error {
+func commandMap(config *models.ConfigType) error {
 	if config.Next == "" {
 		fmt.Println("you're on the last page")
 		return nil
 	}
 
-	res, err := http.Get(config.Next)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
-
-	if err != nil {
-		return err
-	}
-
-	locationAreaResponse := LocationAreaResponse{}
-	err = json.Unmarshal(body, &locationAreaResponse)
+	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Next)
 
 	if err != nil {
 		return err
@@ -91,31 +80,17 @@ func commandMap(config *ConfigType) error {
 	return nil
 }
 
-func commandMapBack(config *ConfigType) error {
+func commandMapBack(config *models.ConfigType) error {
 	if config.Previous == "" {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	res, err := http.Get(config.Previous)
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-	body, err := io.ReadAll(res.Body)
+	locationAreaResponse, err := api.GetAndUnmarshal[models.LocationAreaResponse](config.Previous)
 
 	if err != nil {
 		return err
 	}
-
-	locationAreaResponse := LocationAreaResponse{}
-	err = json.Unmarshal(body, &locationAreaResponse)
-
-	if err != nil {
-		return err
-	}
-
-	fmt.Println(config)
 
 	config.Next = ""
 	config.Previous = ""
