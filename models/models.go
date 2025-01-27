@@ -7,7 +7,7 @@ import (
 type CliCommand struct {
 	Name        string
 	Description string
-	Callback    func(config *ConfigType) error
+	Callback    func(config *ConfigType, arguments []string) error
 }
 
 type ConfigType struct {
@@ -24,6 +24,15 @@ type LocationAreaResponse struct {
 }
 
 type LocationArea struct {
+	Name              string             `json:"name"`
+	URL               string             `json:"url"`
+	PokemonEncounters []PokemonEncounter `json:"pokemon_encounters"`
+}
+
+type PokemonEncounter struct {
+	Pokemon Pokemon `json:"pokemon"`
+}
+
+type Pokemon struct {
 	Name string `json:"name"`
-	URL  string `json:"url"`
 }

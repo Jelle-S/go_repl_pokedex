@@ -23,13 +23,14 @@ func main() {
 	for {
 		fmt.Print("Pokedex > ")
 		scanner.Scan()
-		input := cleanInput(scanner.Text())[0]
-		command, ok := commands[input]
+		inputs := cleanInput(scanner.Text())
+		c := inputs[0]
+		command, ok := commands[c]
 		if !ok {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := command.Callback(&config)
+		err := command.Callback(&config, inputs[1:])
 		if err != nil {
 			panic(err)
 		}
