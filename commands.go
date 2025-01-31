@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"os"
 
 	"github.com/Jelle-S/pokedexcli/internal/api"
@@ -35,6 +36,11 @@ func supportedCommands() map[string]models.CliCommand {
 			Name:        "explore",
 			Description: "Explore an area",
 			Callback:    commandExplore,
+		},
+		"catch": {
+			Name:        "catch",
+			Description: "Catch a pokemon (or try to)",
+			Callback:    commandCatch,
 		},
 	}
 
@@ -130,4 +136,24 @@ func commandExplore(config *models.ConfigType, arguments []string) error {
 	}
 
 	return nil
+}
+
+func commandCatch(config *models.ConfigType, arguments []string) error {
+	fmt.Println("Throwing a Pokeball at " + arguments[0] + "...")
+
+	Pokemon, err := api.GetAndUnmarshal[models.Pokemon]("https://pokeapi.co/api/v2/pokemon/"+arguments[0], config.Cache)
+
+	if err != nil {
+		return err
+	}
+
+	if rand.Intn(Pokemon.BaseExp) > (Pokemon.BaseExp - 30) {
+		config.Pokedex[Pokemon.Name] = Pokemon
+		fmt.Println(Pokemon.Name + " was caught!")
+		return nil
+	}
+
+	fmt.Println(Pokemon.Name + " escaped!")
+	return nil
+
 }

@@ -19,6 +19,7 @@ func main() {
 		Next:     "https://pokeapi.co/api/v2/location-area/",
 		Previous: "",
 		Cache:    pokecache.NewCache(5 * time.Second),
+		Pokedex:  map[string]models.Pokemon{},
 	}
 	for {
 		fmt.Print("Pokedex > ")
