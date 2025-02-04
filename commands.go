@@ -47,6 +47,11 @@ func supportedCommands() map[string]models.CliCommand {
 			Description: "Inspect a pokémon",
 			Callback:    commandInspect,
 		},
+		"pokedex": {
+			Name:        "pokedex",
+			Description: "View all pokémon you've caught",
+			Callback:    commandPokedex,
+		},
 	}
 
 }
@@ -152,7 +157,7 @@ func commandCatch(config *models.ConfigType, arguments []string) error {
 		return err
 	}
 
-	if rand.Intn(Pokemon.BaseExp) > (Pokemon.BaseExp - 30) {
+	if rand.Intn(Pokemon.BaseExp) > (Pokemon.BaseExp - 50) {
 		config.Pokedex[Pokemon.Name] = Pokemon
 		fmt.Println(Pokemon.Name + " was caught!")
 		return nil
@@ -182,6 +187,17 @@ func commandInspect(config *models.ConfigType, arguments []string) error {
 
 	for _, t := range pokemon.Types {
 		fmt.Printf("  -%s\n", t.Type.Name)
+	}
+
+	return nil
+}
+
+func commandPokedex(config *models.ConfigType, arguments []string) error {
+
+	fmt.Println("Your pokemon:")
+
+	for pokemon := range config.Pokedex {
+		fmt.Printf("  - %s\n", pokemon)
 	}
 
 	return nil
